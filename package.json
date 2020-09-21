@@ -1,0 +1,15 @@
+{
+  "name": "kipnes-audio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^2.26.10",
+    "express": "^4.17.1",
+    "gulp": "^3.9.1",
+    "howler": "^2.2.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
