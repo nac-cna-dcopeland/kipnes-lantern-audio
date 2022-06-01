@@ -1,3 +1,5 @@
+
+
 /*!
  *  Howler.js Audio Player Demo
  *  howlerjs.com
@@ -24,7 +26,7 @@ var Player = function(playlist) {
   this.index = 0;
 
   // Display the title of the first track.
-  track.innerHTML = '1. ' + playlist[0].title;
+  track.innerHTML = playlist[0].title;
 
   // Setup the playlist display.
   playlist.forEach(function(song) {
@@ -55,14 +57,13 @@ Player.prototype = {
       sound = data.howl;
     } else {
       sound = data.howl = new Howl({
-        src: ['audio/' + data.file],
-        autoplay: true,
-        //html5: true, // Force to HTML5 so that the audio can stream in (best for large files).
+        src: ['./audio/' + data.file + '.mp3'],
+        html5: true, // Force to HTML5 so that the audio can stream in (best for large files).
         onplay: function() {
           // Display the duration.
           duration.innerHTML = self.formatTime(Math.round(sound.duration()));
 
-          // Start upating the progress of the track.
+          // Start updating the progress of the track.
           requestAnimationFrame(self.step.bind(self));
 
           // Start the wave animation if we have already loaded
@@ -93,13 +94,8 @@ Player.prototype = {
           bar.style.display = 'block';
         },
         onseek: function() {
-          // Start upating the progress of the track.
+          // Start updating the progress of the track.
           requestAnimationFrame(self.step.bind(self));
-        },
-        onplayerror: function() {
-          sound.once('unlock', function() {
-            sound.play();
-          });
         }
       });
     }
@@ -108,7 +104,7 @@ Player.prototype = {
     sound.play();
 
     // Update the track display.
-    track.innerHTML = (index + 1) + '. ' + data.title;
+    track.innerHTML = data.title;
 
     // Show the pause button.
     if (sound.state() === 'loaded') {
@@ -278,15 +274,15 @@ Player.prototype = {
 // Setup our new audio player class and pass it the playlist.
 var player = new Player([
   {
-    title: 'Test audio',
-    file: 'dvorak-symphony7.mp3',
+    title: 'Videovirus',
+    file: 'Videovirus_TO_audio',
     howl: null
   }
 ]);
 
 // Bind our player controls.
 playBtn.addEventListener('click', function() {
-  player.play();
+  //player.play();
 });
 pauseBtn.addEventListener('click', function() {
   player.pause();
@@ -298,7 +294,7 @@ nextBtn.addEventListener('click', function() {
   player.skip('next');
 });
 waveform.addEventListener('click', function(event) {
-  player.seek(event.clientX / window.innerWidth);
+  //player.seek(event.clientX / window.innerWidth);
 });
 playlistBtn.addEventListener('click', function() {
   player.togglePlaylist();
@@ -379,5 +375,72 @@ var resize = function() {
     sliderBtn.style.left = (window.innerWidth * barWidth + window.innerWidth * 0.05 - 25) + 'px';
   }
 };
+
+var vvShowTimeStart = function(currentTime,startTime) {
+  // var currentTime = new Date().getTime();
+  // var today = new Date();
+  // var ss = String(today.getSeconds()).padStart(2, '0');
+  // var mn = String(today.getMinutes()).padStart(2, '0');
+  // var hh = String(today.getHours()).padStart(2, '0');
+  // var dd = String(today.getDate()).padStart(2, '0');
+  // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  // var yyyy = today.getFullYear();
+  // 
+  // today = mm + '/' + dd + '/' + yyyy;
+  // var startTime = new Date(today + " " + ss + " 09:36:00 AM").getTime();
+  
+  //subtractMilliSecondsValue = timeIsBeing936 - currentTime;
+  //   setTimeout(timeToAlert, subtractMilliSecondsValue);
+  //console.log("It's the start of the minute!");
+  console.log("It's the start of the minute!");
+  document.getElementById("playBtn").click();
+};
+var vvShowTimeCheck = function() {
+  // var currentTime = new Date().getTime();
+  // var today = new Date();
+  // var ss = String(today.getSeconds()).padStart(2, '0');
+  // var mn = String(today.getMinutes()).padStart(2, '0');
+  // var hh = String(today.getHours()).padStart(2, '0');
+  // var dd = String(today.getDate()).padStart(2, '0');
+  // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  // var yyyy = today.getFullYear();
+  // 
+  // today = mm + '/' + dd + '/' + yyyy;
+  // var startTime = new Date(today + " " + ss + " 09:36:00 AM").getTime();
+  
+  //subtractMilliSecondsValue = timeIsBeing936 - currentTime;
+  //   setTimeout(timeToAlert, subtractMilliSecondsValue);
+  var currentTime = moment();
+  var startTime = moment().endOf("minute");
+  //duration = moment.duration(duration - interval, 'milliseconds');
+
+};
 window.addEventListener('resize', resize);
 resize();
+//vvShowTimeCheck();
+
+// Check showtime once user interacts with the page.
+document.querySelector('#playBtn').addEventListener('click', function() {
+  console.log("User has clicked play but it's now showtime yet...");
+  $('#myModal').modal();
+
+  var currentTime = moment();
+  //var startTime = moment().endOf("minute");
+  var startTime = moment().add(5,"seconds");
+
+  var timePoll = setInterval(function(){
+    currentTime = moment();
+    if(currentTime > startTime){
+      clearInterval(timePoll);
+      //vvShowTimeCheck();
+      //context.resume().then(() => {
+        $('#myModal').modal('hide');
+        player.play();
+        document.querySelector('#pauseBtn').classList.add("d-none");
+        console.log('Playback resumed successfully');
+      //});
+    } else {
+      console.log(currentTime - startTime);
+    }
+  }, 500);
+});
