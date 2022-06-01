@@ -419,14 +419,35 @@ window.addEventListener('resize', resize);
 resize();
 //vvShowTimeCheck();
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+
 // Check showtime once user interacts with the page.
 document.querySelector('#playBtn').addEventListener('click', function() {
   console.log("User has clicked play but it's now showtime yet...");
   $('#myModal').modal();
 
-  var currentTime = moment();
-  //var startTime = moment().endOf("minute");
-  var startTime = moment().add(5,"seconds");
+  var currentTime = moment(),
+  startTime;
+  if(!getUrlParameter('offset')){
+    startTime = moment().endOf("hour");
+  } else {
+    var timeOffset = getUrlParameter('offset');
+    startTime = moment().add(timeOffset,"seconds");
+  }
 
   var timePoll = setInterval(function(){
     currentTime = moment();
@@ -442,5 +463,5 @@ document.querySelector('#playBtn').addEventListener('click', function() {
     } else {
       console.log(currentTime - startTime);
     }
-  }, 500);
+  }, 250);
 });
