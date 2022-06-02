@@ -58,6 +58,7 @@ Player.prototype = {
     } else {
       sound = data.howl = new Howl({
         src: ['./audio/' + data.file + '.mp3'],
+        loop: false,
         html5: true, // Force to HTML5 so that the audio can stream in (best for large files).
         onplay: function() {
           // Display the duration.
@@ -70,6 +71,10 @@ Player.prototype = {
           wave.container.style.display = 'block';
           bar.style.display = 'none';
           pauseBtn.style.display = 'block';
+          // if(self.firstRun){
+          //   sound.pause();
+          // }
+          // self.firstRun = false;
         },
         onload: function() {
           // Start the wave animation.
@@ -81,7 +86,7 @@ Player.prototype = {
           // Stop the wave animation.
           wave.container.style.display = 'none';
           bar.style.display = 'block';
-          self.skip('next');
+          //self.skip('next');
         },
         onpause: function() {
           // Stop the wave animation.
@@ -96,6 +101,11 @@ Player.prototype = {
         onseek: function() {
           // Start updating the progress of the track.
           requestAnimationFrame(self.step.bind(self));
+        },
+        onplayerror: function() {
+          sound.once('unlock', function() {
+            sound.play();
+          });
         }
       });
     }
@@ -200,15 +210,46 @@ Player.prototype = {
    * Seek to a new position in the currently playing track.
    * @param  {Number} per Percentage through the song to skip.
    */
-  seek: function(per) {
+  seekPercent: function(per) {
     var self = this;
-
     // Get the Howl we want to manipulate.
     var sound = self.playlist[self.index].howl;
 
     // Convert the percent into a seek position.
     if (sound.playing()) {
       sound.seek(sound.duration() * per);
+    }
+  },
+
+  /**
+   * Seek to a new position in the currently playing track.
+   * @param  {Number} seconds through the song to skip.
+   */
+  seekSeconds: function(secs) {
+    var self = this;
+    // Get the Howl we want to manipulate.
+    var sound = self.playlist[self.index].howl;
+
+    // seek to position.
+    if (sound.playing()) {
+      sound.seek(secs);
+    } else {
+      console.log("Sound is not playing");
+    }
+  },
+
+  /**
+   * Seek to a new position in the currently playing track.
+   * @param  {Number} seconds through the song to skip.
+   */
+  getSeek: function() {
+    var self = this;
+    // Get the Howl we want to manipulate.
+    var sound = self.playlist[self.index].howl;
+
+    // get position.
+    if (sound.playing()) {
+      return self.formatTime(Math.round(sound.seek()));
     }
   },
 
@@ -294,7 +335,7 @@ nextBtn.addEventListener('click', function() {
   player.skip('next');
 });
 waveform.addEventListener('click', function(event) {
-  //player.seek(event.clientX / window.innerWidth);
+  //player.#seekPercent(event.clientX / window.innerWidth);
 });
 playlistBtn.addEventListener('click', function() {
   player.togglePlaylist();
@@ -435,33 +476,95 @@ var getUrlParameter = function getUrlParameter(sParam) {
     return false;
 };
 
-// Check showtime once user interacts with the page.
-document.querySelector('#playBtn').addEventListener('click', function() {
-  console.log("User has clicked play but it's now showtime yet...");
-  $('#myModal').modal();
+$('document').ready(function(){
 
-  var currentTime = moment(),
-  startTime;
-  if(!getUrlParameter('offset')){
-    startTime = moment().endOf("hour");
-  } else {
-    var timeOffset = getUrlParameter('offset');
-    startTime = moment().add(timeOffset,"seconds");
-  }
+  var currentlyPlaying = function(currentTime,vvDuration){
+    var endOfVideo = moment().startOf("hour").add(vvDuration,"seconds");
 
-  var timePoll = setInterval(function(){
-    currentTime = moment();
-    if(currentTime > startTime){
-      clearInterval(timePoll);
-      //vvShowTimeCheck();
-      //context.resume().then(() => {
-        $('#myModal').modal('hide');
-        player.play();
-        document.querySelector('#pauseBtn').classList.add("d-none");
-        console.log('Playback resumed successfully');
-      //});
-    } else {
-      console.log(currentTime - startTime);
+    // for testing - video is ALWAYS playing
+    //var endOfVideo = moment().add(vvDuration,"seconds");
+
+    //console.log(endOfVideo);
+    if(currentTime < endOfVideo){
+      console.log("Video is currently playing!");
+      return true;
     }
-  }, 250);
+    return false;
+  };
+
+  // Check showtime once user interacts with the page.
+  document.querySelector('#playBtn').addEventListener('click', function() {
+    player.firstRun = true;
+    //player.play();
+    //player.pause();
+    var currentTime = moment(),
+    startTime,
+    //vvDuration = 180;
+    vvDuration = 20;
+  
+    if(!getUrlParameter('offset')){
+      if(currentlyPlaying(currentTime,vvDuration)){
+        console.log("User has clicked play but it's already started...");
+        $('#myModal').modal();
+        
+        player.volume(0);
+        player.play();
+
+        setTimeout(
+          function() 
+            {
+              player.seekSeconds((moment().minute()*60) + moment().second());
+            },
+        100);
+
+        player.volume(1);
+        //console.log((moment().minute()*60) + moment().second());
+        //player.seekSeconds(20);
+        document.querySelector('#pauseBtn').classList.add("d-none");
+        console.log('Playback resumed successfully with calculated offset');
+      } else {
+  
+        console.log("User has clicked play but it's not showtime yet...");
+        $('#myModal').modal();
+        var timePoll = setInterval(function(){
+          var currentTime = moment(),
+          startTime = moment().endOf("hour");
+      
+          if(currentTime > startTime){
+            clearInterval(timePoll);
+            //vvShowTimeCheck();
+            //context.resume().then(() => {
+              //$('#myModal').modal('hide');
+              player.play();
+              document.querySelector('#pauseBtn').classList.add("d-none");
+              console.log('Playback began successfully on the hour');
+            //});
+          } else {
+            console.log(startTime.diff(currentTime,'seconds') + " seconds until audio");
+          }
+        }, 250);
+      }
+    } else {
+      $('#myModal').modal();
+      var timeOffset = getUrlParameter('offset');
+      startTime = moment().add(timeOffset,"seconds");
+        var timePoll = setInterval(function(){
+          var currentTime = moment();
+      
+          if(currentTime > startTime){
+            clearInterval(timePoll);
+            //vvShowTimeCheck();
+            //context.resume().then(() => {
+              //$('#myModal').modal('hide');
+              player.play();
+              document.querySelector('#pauseBtn').classList.add("d-none");
+              console.log('Playback resumed successfully after offset');
+            //});
+          } else {
+            console.log(startTime.diff(currentTime,'seconds') + " seconds until audio");
+          }
+        }, 250);
+    }
+  
+  });
 });
