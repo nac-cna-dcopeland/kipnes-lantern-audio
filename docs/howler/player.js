@@ -499,8 +499,8 @@ $('document').ready(function(){
     //player.pause();
     var currentTime = moment(),
     startTime,
-    //vvDuration = 180;
-    vvDuration = 20;
+    vvDuration = 180;
+    //vvDuration = 20;
   
     if(!getUrlParameter('offset')){
       if(currentlyPlaying(currentTime,vvDuration)){
