@@ -2,6 +2,7 @@
 
 let browserSync = require('browser-sync').create();
 let gulp = require('gulp');
+let cachebust = require('gulp-cache-bust');
 
 // BrowserSync Task (Live reload)
 gulp.task('browserSync', function() {
@@ -12,6 +13,12 @@ gulp.task('browserSync', function() {
 		port: 8080
 	})
 });
+
+gulp.src('./docs/index.html')
+    .pipe(cachebust({
+        type: 'timestamp'
+    }))
+    .pipe(gulp.dest('./docs'));
 
 // Gulp Watch Task
 gulp.task('watch', ['browserSync'], function () {

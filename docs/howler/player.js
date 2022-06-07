@@ -315,7 +315,7 @@ Player.prototype = {
 // Setup our new audio player class and pass it the playlist.
 var player = new Player([
   {
-    title: 'Videovirus',
+    title: 'VideoVirus',
     file: 'Videovirus_TO_audio',
     howl: null
   }
@@ -505,7 +505,7 @@ $('document').ready(function(){
     if(!getUrlParameter('offset')){
       if(currentlyPlaying(currentTime,vvDuration)){
         console.log("User has clicked play but it's already started...");
-        $('#myModal').modal();
+        //$('#myModal').modal();
         
         player.volume(0);
         player.play();
@@ -525,7 +525,7 @@ $('document').ready(function(){
       } else {
   
         console.log("User has clicked play but it's not showtime yet...");
-        $('#myModal').modal();
+        //$('#myModal').modal();
         var timePoll = setInterval(function(){
           var currentTime = moment(),
           startTime = moment().endOf("hour");
@@ -545,7 +545,7 @@ $('document').ready(function(){
         }, 250);
       }
     } else {
-      $('#myModal').modal();
+      //$('#myModal').modal();
       var timeOffset = getUrlParameter('offset');
       startTime = moment().add(timeOffset,"seconds");
         var timePoll = setInterval(function(){
