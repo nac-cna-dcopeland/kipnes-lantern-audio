@@ -659,6 +659,11 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
+"countdown@>= 2.3.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/countdown/-/countdown-2.6.0.tgz#677fb8e3a9d4cc4e76415901ba253b518af34177"
+  integrity sha512-96C3ntj6/Q0KiikjRxDTrnw09VHI1x930gDTxBnTN8spEjySAT4ftvPXbM22Wn1pp5X0HvZ9uw6DOIf2d8g7rg==
+
 crypt@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
@@ -1771,6 +1776,11 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
+jquery-countdown@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/jquery-countdown/-/jquery-countdown-2.2.0.tgz#ba78ed5d7cf107b3b1cac9c6ba07997d4aa2dcef"
+  integrity sha512-EKjzyaHYSQdOnn/eVvP84l044kDB6w//IR/25CHGyhJfT1Lb9pQdMo75n+MqZWgJpLprfeCyaPo/jaSn6sR5AA==
+
 jsonfile@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-3.0.1.tgz#a5ecc6f65f53f662c4415c7675a0331d0992ec66"
@@ -2174,7 +2184,15 @@ mkdirp@^0.5.0:
   dependencies:
     minimist "^1.2.5"
 
-moment@^2.29.3:
+moment-countdown@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/moment-countdown/-/moment-countdown-0.0.3.tgz#93100c92aa6fd884b84a83814ebdcd6b87f3388d"
+  integrity sha512-sYHhF+ElBYccDeMlEKwF6wOmvjO1MU6xUqc456nQqMfbBBkIQWNwe40cQif17wFrNfwroMMsiMRUkE5C2ioSWw==
+  dependencies:
+    countdown ">= 2.3.0"
+    moment ">= 2.0.0"
+
+"moment@>= 2.0.0", moment@^2.29.3:
   version "2.29.3"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
   integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==

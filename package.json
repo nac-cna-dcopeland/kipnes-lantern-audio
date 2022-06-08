@@ -9,7 +9,9 @@
     "gulp": "^3.9.1",
     "gulp-cache-bust": "^1.4.1",
     "howler": "^2.2.3",
-    "moment": "^2.29.3"
+    "jquery-countdown": "^2.2.0",
+    "moment": "^2.29.3",
+    "moment-countdown": "^0.0.3"
   },
   "resolutions": {
     "graceful-fs": "^4.2.9"

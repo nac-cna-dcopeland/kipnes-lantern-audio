@@ -492,13 +492,29 @@ $('document').ready(function(){
     return false;
   };
 
+  var countdownHTML = function(startTime){
+    $('#countdown .timer').countdown(moment(startTime).toDate(), function(event) {
+      $(this).html("Next presentation in / prochaine pr&eacute;sentation dans " + event.strftime('%H:%M:%S'));
+    });
+  };
+
   var playVVAudio = function(msg){
+    $('#countdown').addClass("d-none");
     $('.time').removeClass("d-none");
     player.play();
     $('#pauseBtn').addClass("d-none");
     console.log(msg);
   };
 
+  if(!getUrlParameter('offset')){
+    var pageLoadTime = moment(),
+    vvDuration = 180;
+    if(!currentlyPlaying(pageLoadTime, vvDuration)){
+      var startTime = moment().endOf("hour");
+      countdownHTML(startTime);
+    }
+  }
+      
   // Check showtime once user interacts with the page.
   $('#playBtn').bind('click', function() {
     player.firstRun = true;
@@ -525,12 +541,12 @@ $('document').ready(function(){
 
         player.volume(1);
       } else {
-  
+        var startTime = moment().endOf("hour");
         console.log("User has clicked play but it's not showtime yet...");
+        $('#playBtn').addClass("d-none");
         //$('#myModal').modal();
         var timePoll = setInterval(function(){
-          var currentTime = moment(),
-          startTime = moment().endOf("hour");
+          var currentTime = moment();
       
           if(currentTime > startTime){
             clearInterval(timePoll);
@@ -548,6 +564,7 @@ $('document').ready(function(){
       //$('#myModal').modal();
       var timeOffset = getUrlParameter('offset');
       startTime = moment().add(timeOffset,"seconds");
+      countdownHTML(startTime);
         var timePoll = setInterval(function(){
           var currentTime = moment();
       
