@@ -385,10 +385,10 @@ volume.addEventListener('touchmove', move);
 var wave = new SiriWave({
   container: waveform,
   width: window.innerWidth,
-  height: window.innerHeight * 0.3,
+  height: window.innerHeight * 0.15,
   cover: true,
   speed: 0.03,
-  amplitude: 0.7,
+  amplitude: 0.5,
   frequency: 2
 });
 wave.start();
@@ -492,8 +492,15 @@ $('document').ready(function(){
     return false;
   };
 
+  var playVVAudio = function(msg){
+    $('.time').removeClass("d-none");
+    player.play();
+    $('#pauseBtn').addClass("d-none");
+    console.log(msg);
+  };
+
   // Check showtime once user interacts with the page.
-  document.querySelector('#playBtn').addEventListener('click', function() {
+  $('#playBtn').bind('click', function() {
     player.firstRun = true;
     //player.play();
     //player.pause();
@@ -504,11 +511,10 @@ $('document').ready(function(){
   
     if(!getUrlParameter('offset')){
       if(currentlyPlaying(currentTime,vvDuration)){
-        console.log("User has clicked play but it's already started...");
         //$('#myModal').modal();
         
         player.volume(0);
-        player.play();
+        playVVAudio('User has clicked play but it\'s already started...playback will resume with calculated offset');
 
         setTimeout(
           function() 
@@ -518,10 +524,6 @@ $('document').ready(function(){
         100);
 
         player.volume(1);
-        //console.log((moment().minute()*60) + moment().second());
-        //player.seekSeconds(20);
-        document.querySelector('#pauseBtn').classList.add("d-none");
-        console.log('Playback resumed successfully with calculated offset');
       } else {
   
         console.log("User has clicked play but it's not showtime yet...");
@@ -535,9 +537,7 @@ $('document').ready(function(){
             //vvShowTimeCheck();
             //context.resume().then(() => {
               //$('#myModal').modal('hide');
-              player.play();
-              document.querySelector('#pauseBtn').classList.add("d-none");
-              console.log('Playback began successfully on the hour');
+              playVVAudio('Playback began successfully on the hour');
             //});
           } else {
             console.log(startTime.diff(currentTime,'seconds') + " seconds until audio");
@@ -556,9 +556,7 @@ $('document').ready(function(){
             //vvShowTimeCheck();
             //context.resume().then(() => {
               //$('#myModal').modal('hide');
-              player.play();
-              document.querySelector('#pauseBtn').classList.add("d-none");
-              console.log('Playback resumed successfully after offset');
+              playVVAudio('Playback resumed successfully after offset');
             //});
           } else {
             console.log(startTime.diff(currentTime,'seconds') + " seconds until audio");

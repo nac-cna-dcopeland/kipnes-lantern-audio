@@ -339,7 +339,7 @@ html {
 	margin-top: 18%;
 }
 #myModalFr{
-	margin-bottom: 25%;
+	margin-bottom: 24%;
 }
 @media (min-height: 800px){
 	#myModalEn{
@@ -371,6 +371,7 @@ html {
 	color: #fff;
 }
 .modal-title{
+	line-height: 1.3em;
 }
 .modal-body{
 	padding-bottom: 0;
