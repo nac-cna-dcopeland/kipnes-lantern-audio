@@ -417,48 +417,8 @@ var resize = function() {
   }
 };
 
-var vvShowTimeStart = function(currentTime,startTime) {
-  // var currentTime = new Date().getTime();
-  // var today = new Date();
-  // var ss = String(today.getSeconds()).padStart(2, '0');
-  // var mn = String(today.getMinutes()).padStart(2, '0');
-  // var hh = String(today.getHours()).padStart(2, '0');
-  // var dd = String(today.getDate()).padStart(2, '0');
-  // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  // var yyyy = today.getFullYear();
-  // 
-  // today = mm + '/' + dd + '/' + yyyy;
-  // var startTime = new Date(today + " " + ss + " 09:36:00 AM").getTime();
-  
-  //subtractMilliSecondsValue = timeIsBeing936 - currentTime;
-  //   setTimeout(timeToAlert, subtractMilliSecondsValue);
-  //console.log("It's the start of the minute!");
-  console.log("It's the start of the minute!");
-  document.getElementById("playBtn").click();
-};
-var vvShowTimeCheck = function() {
-  // var currentTime = new Date().getTime();
-  // var today = new Date();
-  // var ss = String(today.getSeconds()).padStart(2, '0');
-  // var mn = String(today.getMinutes()).padStart(2, '0');
-  // var hh = String(today.getHours()).padStart(2, '0');
-  // var dd = String(today.getDate()).padStart(2, '0');
-  // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  // var yyyy = today.getFullYear();
-  // 
-  // today = mm + '/' + dd + '/' + yyyy;
-  // var startTime = new Date(today + " " + ss + " 09:36:00 AM").getTime();
-  
-  //subtractMilliSecondsValue = timeIsBeing936 - currentTime;
-  //   setTimeout(timeToAlert, subtractMilliSecondsValue);
-  var currentTime = moment();
-  var startTime = moment().endOf("minute");
-  //duration = moment.duration(duration - interval, 'milliseconds');
-
-};
 window.addEventListener('resize', resize);
 resize();
-//vvShowTimeCheck();
 
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),
@@ -478,6 +438,32 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 $('document').ready(function(){
 
+  var countdownHTML = function(startTime){
+    console.log(startTime);
+    $('#countdown .timer').countdown(moment(startTime).toDate(), function(event) {
+      $(this).html("Next presentation in / prochaine pr&eacute;sentation dans " + event.strftime('%H:%M:%S'));
+    });
+  };
+
+  var vvShowTimeCheck = function() {
+    var showTimeHours = new Array(
+      18,19,20,21,22,23
+    ),
+    nextShowTime;
+  
+    var currentHour = moment().get('hour');
+  
+    if (currentHour < 18){
+      nextShowTime = moment().set('hour',18).startOf("hour");
+    } else if (currentHour > 22) {
+      nextShowTime = moment().add('day',1).set('hour',18).startOf("hour");
+    } else {
+      nextShowTime = moment().add('hour',1).startOf("hour");
+    }
+    console.log(nextShowTime);
+    return nextShowTime;
+  };
+
   var currentlyPlaying = function(currentTime,vvDuration){
     var endOfVideo = moment().startOf("hour").add(vvDuration,"seconds");
 
@@ -492,12 +478,6 @@ $('document').ready(function(){
     return false;
   };
 
-  var countdownHTML = function(startTime){
-    $('#countdown .timer').countdown(moment(startTime).toDate(), function(event) {
-      $(this).html("Next presentation in / prochaine pr&eacute;sentation dans " + event.strftime('%H:%M:%S'));
-    });
-  };
-
   var playVVAudio = function(msg){
     $('#countdown').addClass("d-none");
     $('.time').removeClass("d-none");
@@ -510,7 +490,7 @@ $('document').ready(function(){
     var pageLoadTime = moment(),
     vvDuration = 180;
     if(!currentlyPlaying(pageLoadTime, vvDuration)){
-      var startTime = moment().endOf("hour");
+      var startTime = vvShowTimeCheck();
       countdownHTML(startTime);
     }
   }
