@@ -439,28 +439,33 @@ var getUrlParameter = function getUrlParameter(sParam) {
 $('document').ready(function(){
 
   var countdownHTML = function(startTime){
-    console.log(startTime);
+    //console.log(startTime);
     $('#countdown .timer').countdown(moment(startTime).toDate(), function(event) {
       $(this).html("Next presentation in / prochaine pr&eacute;sentation dans " + event.strftime('%H:%M:%S'));
     });
   };
 
   var vvShowTimeCheck = function() {
+    var hourly = (!getUrlParameter('hourly')) ? false : true;
     var showTimeHours = new Array(
       18,19,20,21,22,23
     ),
     nextShowTime;
   
-    var currentHour = moment().get('hour');
-  
-    if (currentHour < 18){
-      nextShowTime = moment().set('hour',18).startOf("hour");
-    } else if (currentHour > 22) {
-      nextShowTime = moment().add('day',1).set('hour',18).startOf("hour");
-    } else {
+    if (hourly){
       nextShowTime = moment().add('hour',1).startOf("hour");
+    } else {
+      var currentHour = moment().get('hour');
+    
+      if (currentHour < 18){
+        nextShowTime = moment().set('hour',18).startOf("hour");
+      } else if (currentHour > 22) {
+        nextShowTime = moment().add('day',1).set('hour',18).startOf("hour");
+      } else {
+        nextShowTime = moment().add('hour',1).startOf("hour");
+      }
     }
-    console.log(nextShowTime);
+    //console.log(nextShowTime);
     return nextShowTime;
   };
 
@@ -515,13 +520,15 @@ $('document').ready(function(){
         setTimeout(
           function() 
             {
+              console.log("Seeking to: ("+moment().minute() +" X 60) + " + moment().second() + " = (" + ((moment().minute()*60) + moment().second()) + ")");
               player.seekSeconds((moment().minute()*60) + moment().second());
+              //player.seekSeconds(40);
             },
-        100);
+        200);
 
         player.volume(1);
       } else {
-        var startTime = moment().endOf("hour");
+        var startTime = vvShowTimeCheck();
         console.log("User has clicked play but it's not showtime yet...");
         $('#playBtn').addClass("d-none");
         //$('#myModal').modal();
