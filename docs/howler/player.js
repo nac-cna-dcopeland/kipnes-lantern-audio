@@ -316,7 +316,7 @@ Player.prototype = {
 var player = new Player([
   {
     title: 'VideoVirus',
-    file: 'Videovirus_TO_audio',
+    file: 'Videovirus_TO_audio2',
     howl: null
   }
 ]);
